@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <h5>组件</h5>
+    <div id="components-demo">
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+    </div>
+
+    <h5>通过 Prop 向子组件传递数据</h5>
+    <div id="blog-post-demo">
+        <blog-post v-for="post in posts" v-bind:key="post.id" v-bind:title="post.title"></blog-post>
+    </div>
+
+    <h5>监听子组件事件</h5>
+    <div id="blog-posts-events-demo">
+        <div :style="{ fontSize: postFontSize + 'em' }">
+            <blog-post-1 v-for="post in posts" v-on:enlarge-text="postFontSize += 0.1" v-bind:key="post.id" v-bind:post="post"></blog-post-1>
+        </div>
+    </div>
+    <script>
+        Vue.component('button-counter', {
+            data: function () {
+                return {
+                    count: 0
+                }
+            },
+            template: '<button v-on:click="count++">你按了 {{ count }} 次.</button>'
+        })
+        Vue.component('blog-post', {
+            props: ['title'],
+            template: '<h3>{{ title }}</h3>'
+        })
+        Vue.component('blog-post-1', {
+            props: ['post'],
+            template: `
+                <div class="blog-post">
+                <h3>{{ post.title }}</h3>
+                <button v-on:click="$emit('enlarge-text')">
+                Enlarge text
+                </button>
+                <div v-html="post.content"></div>
+                </div>
+            `
+        })
+        var example01 = new Vue({
+            el: '#components-demo'
+        })
+        var example02 = new Vue({
+            el: '#blog-post-demo',
+            data: {
+                posts: [{
+                        id: 1,
+                        title: '我们都是中国人'
+                    },
+                    {
+                        id: 2,
+                        title: '世界和平'
+                    },
+                    {
+                        id: 3,
+                        title: '爱我中华'
+                    }
+                ]
+            }
+        })
+        new Vue({
+            el: '#blog-posts-events-demo',
+            data: {
+                posts: [{
+                    id: 1,
+                    content: "...内容...",
+                    title: "五十六个民族，五十六朵花。"
+                },{
+                    id: 2,
+                    content: "...内容...",
+                    title: "中国"
+                }],
+                postFontSize: 1
+            }
+        })
+    </script>
+</body>
+
+</html>
